@@ -45,18 +45,19 @@ def ProcessDir(wabt_test_dir, testsuite_dir, tool, flags=None):
     wabt_tests = GetFilesWithExtension(wabt_test_dir, '.txt')
 
     for removed_test_name in wabt_tests - testsuite_tests:
-        test_filename = os.path.join(wabt_test_dir, removed_test_name + '.txt')
+        test_filename = os.path.join(wabt_test_dir, f'{removed_test_name}.txt')
         if options.verbose:
-            print('Removing %s' % test_filename)
+            print(f'Removing {test_filename}')
         os.remove(test_filename)
 
     for added_test_name in testsuite_tests - wabt_tests:
         wast_filename = os.path.join(
             os.path.relpath(testsuite_dir, REPO_ROOT_DIR),
-            added_test_name + '.wast')
-        test_filename = os.path.join(wabt_test_dir, added_test_name + '.txt')
+            f'{added_test_name}.wast',
+        )
+        test_filename = os.path.join(wabt_test_dir, f'{added_test_name}.txt')
         if options.verbose:
-            print('Adding %s' % test_filename)
+            print(f'Adding {test_filename}')
 
         test_dirname = os.path.dirname(test_filename)
         if not os.path.exists(test_dirname):
@@ -101,13 +102,13 @@ def main(args):
         'relaxed-simd': '--enable-relaxed-simd',
     }
 
-    unimplemented = set([
+    unimplemented = {
         'gc',
         'function-references',
         'threads',
         'annotations',
         'exception-handling',
-    ])
+    }
 
     # sanity check to verify that all flags are valid
     for proposal in flags:

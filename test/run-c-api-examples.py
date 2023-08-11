@@ -49,7 +49,7 @@ IS_WINDOWS = sys.platform == 'win32'
 
 
 def run_test(test_exe):
-    print('Running.. %s' % test_exe)
+    print(f'Running.. {test_exe}')
     proc = subprocess.Popen([test_exe], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     stdout, _ = proc.communicate()
     if proc.returncode == 0:
@@ -70,12 +70,10 @@ def check_for_missing(upstream_examples):
 
     upstream_examples = set(upstream_examples)
     all_examples = set(ALL_EXAMPLES)
-    unexpected = upstream_examples - all_examples
-    if unexpected:
-        error('Unexpected examples found: %s' % str(unexpected))
-    missing = all_examples - upstream_examples
-    if missing:
-        error('Missing example binaries not found: %s' % str(missing))
+    if unexpected := upstream_examples - all_examples:
+        error(f'Unexpected examples found: {str(unexpected)}')
+    if missing := all_examples - upstream_examples:
+        error(f'Missing example binaries not found: {str(missing)}')
 
 
 def main(args):
@@ -104,9 +102,9 @@ def main(args):
     for f in to_run:
         if IS_WINDOWS:
             f += '.exe'
-        exe = os.path.join(options.bindir, 'wasm-c-api-' + f)
+        exe = os.path.join(options.bindir, f'wasm-c-api-{f}')
         if not os.path.exists(exe):
-            error('test executable not found: %s' % exe)
+            error(f'test executable not found: {exe}')
 
         count += 1
         if run_test(exe) != 0:
